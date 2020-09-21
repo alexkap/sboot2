@@ -35,7 +35,13 @@ public class CustomMap {
 
     private final Map<String, Set<String>> miniMap = new HashMap<>();
 
+    /**
+     * Load city pairs from the file
+     * @param fName file path/name relative to work directory.
+     * @throws Exception if the file is not found or cannot be read
+     */
     public void loadFromFile(String fName) throws Exception {
+        //TODO needs cleaning up to make a file location explicit/ unique
         LOG.debug("loading a map from {}", fName);
         URL res = getClass().getClassLoader().getResource(fName);
         InputStream is = null;
@@ -59,14 +65,22 @@ public class CustomMap {
             }
         }
         else
-            throw new Exception("Unable to load from file "  + fName);
+            throw new Exception("Unable to load from the file "  + fName);
     }
 
+    /**
+     * Add  "road" - from a String - two names comma separated
+     * @param cities - a String with a comma , e.g. "Newark, New York"
+     */
     public void addRoad(String cities) {
         String[] p = cities.split(",");
         addRoad(p[0].trim(), p[1].trim());
     }
 
+    /**
+     *
+     * @return total number of cities currently loaded
+     */
     public int getNumberOfCities() {
         return miniMap.keySet().size();
     }
@@ -88,7 +102,13 @@ public class CustomMap {
         miniMap.get(c2).add(c1);
     }
 
-
+    /**
+     * Probably main business API method.
+     * Check if there is a road between two cities
+     * @param city1
+     * @param city2
+     * @return true - if there is any way (e.g. through other cities), false otherwise
+     */
     public boolean areConnected(String city1, String city2) {
         LOG.debug("trying to navigate from " + city1 + " to " + city2);
         if(!miniMap.containsKey(city1)) {
@@ -104,6 +124,11 @@ public class CustomMap {
         return routeFound;
     }
 
+    /**
+     * For future extension
+     * @param c1
+     * @param c2
+     */
     private void removeRoad(String c1, String c2) {
         Set<String> roadsFromC1 = miniMap.get(c1);
         Set<String> roadsFromC2 = miniMap.get(c2);
@@ -117,18 +142,29 @@ public class CustomMap {
         return nb.contains(city2);
     }
 
+    /**
+     *  Utility method to be used by e.g. tests
+     * @param city
+     * @return set of city names adjacent  to <code>city</code>
+     */
     Set<String> getNeighbours(String city) {
         return miniMap.get(city);
     }
 
     /**
-     *
+     * Utility method
      * @return Sorted alphabetically
      */
     String getAllCitiesOnTheMap() {
         return miniMap.keySet().stream().sorted().collect(Collectors.joining(","));
     }
 
+    /**
+     * Graph traversal method, with optional <code>endPoint</code>
+     * @param root  - starting point
+     * @param endPoint  - optional, if null then the whole path will be collected, otherwise stops at <code>endPoint</code> if it is accessible
+     * @return set of partial path : <code>root,...,endPoint</code> or full graph traversal :<code>root,...,`endPoint`,...</code>
+     */
     private Set<String> breadthFirstTraversal(String root, String endPoint) {
         Set<String> visited = new LinkedHashSet<String>();
         Queue<String> queue = new LinkedList<String>();
