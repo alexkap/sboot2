@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+#
+spring:
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    ak: debug
