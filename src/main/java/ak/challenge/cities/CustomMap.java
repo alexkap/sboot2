@@ -97,10 +97,10 @@ public class CustomMap {
             LOG.error("Unknown point " + city2); return false;
         }
 
-        Set<String> route = breadthFirstTraversal(city1);
+        Set<String> route = breadthFirstTraversal(city1, city2);
         boolean routeFound = route.contains(city2);
         if (routeFound)
-            LOG.info("Found route to navigate from " + city1 + " to " + city2 + "\n" + route );
+            LOG.info("Found route to navigate from " + city1 + " to " + city2 + "\n" + route);
         return routeFound;
     }
 
@@ -129,7 +129,7 @@ public class CustomMap {
         return miniMap.keySet().stream().sorted().collect(Collectors.joining(","));
     }
 
-    private Set<String> breadthFirstTraversal(String root) {
+    private Set<String> breadthFirstTraversal(String root, String endPoint) {
         Set<String> visited = new LinkedHashSet<String>();
         Queue<String> queue = new LinkedList<String>();
         queue.add(root);
@@ -140,6 +140,10 @@ public class CustomMap {
                 if (!visited.contains(c)) {
                     visited.add(c);
                     queue.add(c);
+                    if (endPoint != null && endPoint.equals(c)) {
+                        LOG.debug("Path found to the end point: "  +visited);
+                        return visited;
+                    }
                 }
             }
         }
