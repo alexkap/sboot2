@@ -30,4 +30,8 @@ public class CitiesController {
         else return "no";
     }
 
+    @GetMapping("/allcities")
+    public String getAllCities() {
+        return navigator.getAllCitiesOnTheMap();
+    }
 }
