@@ -2,7 +2,7 @@ server:
   port: 8080
   error:
     whitelabel:
-      enabled: false
+      enabled: true
 
 #
 spring:
